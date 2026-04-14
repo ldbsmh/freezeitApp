@@ -18,17 +18,20 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
-          java-version: 17
+          distribution: 'temurin'
+          java-version: '21' # 匹配你日志中的 Java 21 要求
+          cache: 'gradle'    # 自动缓存依赖，加快编译
 
       - name: Enable gradlew
         run: chmod +x gradlew
 
-      - name: Build release apk
+      - name: Build Release APK
+        # 即使不签名，也可以运行 assembleRelease 得到未签名的 APK
         run: ./gradlew assembleRelease
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-release
+          name: app-release-unsigned
+          # 编译后的文件通常在 app/build/outputs/apk/release/ 目录下
           path: app/build/outputs/apk/release/*.apk
