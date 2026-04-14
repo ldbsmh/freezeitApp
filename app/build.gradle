@@ -1,23 +1,12 @@
 plugins {
     id 'com.android.application'
+    // 注意：如果你的项目主要使用 Java，保持原样；如果用 Kotlin，确保此插件版本正确
     id 'org.jetbrains.kotlin.android' version '1.8.0' apply false
 }
 
 android {
-    signingConfigs {
-        debug {
-            storeFile file('D:\\project\\github\\freezeitapp\\freezeitapp_key.jks')
-            storePassword 'freezeit'
-            keyAlias 'freezeit'
-            keyPassword 'freezeit'
-        }
-        release {
-            storeFile file('D:\\project\\github\\freezeitapp\\freezeitapp_key.jks')
-            storePassword 'freezeit'
-            keyAlias 'freezeit'
-            keyPassword 'freezeit'
-        }
-    }
+    // 彻底删除了 signingConfigs 里的 D:\ 路径
+
     compileSdk 34
 
     defaultConfig {
@@ -28,32 +17,37 @@ android {
         versionName "3.1.0Alpha"
 
         resValue "string", "versionName", "${versionName}"
-        signingConfig signingConfigs.release
+        
+        // 关键：删除了这里的 signingConfig 引用
     }
 
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            // 关键：删除了这里的 signingConfig 引用
             multiDexEnabled false
         }
     }
-    android.applicationVariants.configureEach {
-        variant ->
-            variant.outputs.configureEach {
-                outputFileName = "freezeit_v${versionName}_${variant.buildType.name}.apk"
-            }
+
+    android.applicationVariants.configureEach { variant ->
+        variant.outputs.configureEach {
+            outputFileName = "freezeit_v${versionName}_${variant.buildType.name}.apk"
+        }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+
     buildFeatures {
         viewBinding true
         buildConfig true
     }
+
     namespace 'io.github.jark006.freezeit'
+
     dependenciesInfo {
         includeInApk false
         includeInBundle false
@@ -61,11 +55,8 @@ android {
 }
 
 dependencies {
-
     compileOnly 'de.robv.android.xposed:api:82'
-
     implementation(platform('org.jetbrains.kotlin:kotlin-bom:1.9.0'))
-
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.lifecycle:lifecycle-livedata:2.7.0'
